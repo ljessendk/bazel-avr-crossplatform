@@ -1,0 +1,7 @@
+image:
+  file: .gitpod.dockerfile
+tasks:
+  - init: |
+      bazel build -s ...
+    command: |
+      bazel test -s ...

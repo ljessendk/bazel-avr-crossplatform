@@ -1,0 +1,1 @@
+This example performs multiplatform builds by using a custom platforms_transition_rule that accepts a 'platforms' argument.

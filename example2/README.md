@@ -1,0 +1,1 @@
+This example performs multiplatform builds by defining wrapper rules for each platform and rule combination by using 'rules_meta'
