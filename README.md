@@ -28,8 +28,8 @@ Uses a custom 'platforms_transition_rule' that can transition a single file from
 
 ### Example 2
 
-Uses 'rules_meta' to define static wrapper rules for each platform+rule combination.
+Defines wrapper rules for existing rules. The new wrapper rules accepts a 'platforms' argument.
 
 ### Example 3
 
-Defines wrapper rules for existing rules. The new wrapper rules accepts a 'platforms' argument.
+Defines wrapper rules for existign rules. One wrapper rule pr. platform+rule combination.

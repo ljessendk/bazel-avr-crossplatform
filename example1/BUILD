@@ -10,8 +10,6 @@ cc_binary(
         "hello.h",
     ],
     includes = ["."],
-    # Tagged as manual as we only want this to build if requested through a transition
-    tags = ["manual"],
 )
 
 objcopy(
@@ -33,7 +31,6 @@ objcopy(
     for (platforms, name) in [
         ("//platforms:at90can128_12mhz", "helloworld_at90can128_12mhz"),
         ("//platforms:atmega328p_16mhz", "helloworld_atmega328p_16mhz"),
-        ("", "helloworld_host"),
     ]
 ]
 
@@ -79,6 +76,6 @@ pkg_tar(
         "helloworld_at90can128_12mhz.hex",
         "helloworld_atmega328p_16mhz",
         "helloworld_atmega328p_16mhz.hex",
-        "helloworld_host",
+        "helloworld",
     ],
 )

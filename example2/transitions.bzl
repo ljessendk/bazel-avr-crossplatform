@@ -1,32 +1,73 @@
 """
 Methods for performing platform transitions
 """
-
-load("@rules_meta//meta:defs.bzl", "meta")
 load("//tools:objcopy.bzl", "objcopy")
 
-def _cc_binary(platforms):
-    return meta.wrap_with_transition(
-        native.cc_binary,
-        {
-            "platforms": meta.replace_with([platforms]),
-        },
-    )
+def cc_binary_platforms(name, platforms = "", tags = [], **kwargs):
+    """
+    cc_binary with platform transition
 
-at90can128_12mhz_cc_binary = _cc_binary("//platforms:at90can128_12mhz")
-atmega328p_16mhz_cc_binary = _cc_binary("//platforms:atmega328p_16mhz")
-host_cc_binary = _cc_binary("@local_config_platform//:host")
+    Args:
+        name: rule name
+        tags: tags
+        platforms: platform to use
+        **kwargs: additional arguments passed to objcopy
+    """
+    if platforms != "":
+        orig_name = name + ".orig"
+        internal_rule_tags = tags + (["manual"] if "manual" not in tags else [])
+        native.cc_binary(name = orig_name, tags = internal_rule_tags, **kwargs)
+        platforms_symlink_transition(
+            name = name + "_transition_rule",
+            platforms = platforms,
+            target_file = orig_name,
+            output = name
+        )
+    else:
+        native.cc_binary(name = name, tags = tags, **kwargs)
 
-def _objcopy(platforms):
-    return meta.wrap_with_transition(
-        objcopy,
-        {
-            "platforms": meta.replace_with([platforms]),
-        },
-    )
+def objcopy_platforms(name, out, platforms = "", tags = [], **kwargs):
+    """
+    objcopy with platform transition
 
-at90can128_12mhz_objcopy = _objcopy("//platforms:at90can128_12mhz")
-atmega328p_16mhz_objcopy = _objcopy("//platforms:atmega328p_16mhz")
+    Args:
+        name: rule name
+        out: output
+        tags: tags
+        platforms: platform to use
+        **kwargs: additional arguments passed to objcopy
+    """
+    if platforms != "":
+        orig_name = name + ".orig"
+        orig_out = out + ".orig"
+        internal_rule_tags = tags + (["manual"] if "manual" not in tags else [])
+        objcopy(name = orig_name, out = orig_out, tags = internal_rule_tags, **kwargs)
+        platforms_symlink_transition(
+            name = name + "_transition_rule",
+            platforms = platforms,
+            target_file = orig_out,
+            output = out
+        )
+    else:
+        objcopy(name = name, tags= tags, **kwargs)
+
+def _platforms_transition_impl(settings, attr):
+    _ignore = settings
+
+    res = {
+        "//command_line_option:platforms": attr.platforms,
+    } if attr.platforms != "" else {}
+
+    return res
+
+_platforms_transition = transition(
+    implementation = _platforms_transition_impl,
+    inputs = [
+    ],
+    outputs = [
+        "//command_line_option:platforms",
+    ],
+)
 
 def _symlink_transition_rule_impl(ctx):
     ctx.actions.symlink(output = ctx.outputs.output, target_file = ctx.file.target_file)
@@ -44,6 +85,22 @@ def _attrs(cfg):
         # The File that the output symlink will point to.
         "target_file": attr.label(mandatory = True, allow_single_file = True, cfg = cfg),
     }
+
+_platforms_symlink_transition_attrs = _attrs(_platforms_transition)
+_platforms_symlink_transition_attrs.update({
+    # Platforms setting (override //command_line_option:platforms)
+    "platforms": attr.string(),
+    # Enable/allow user-defined transitions (see https://bazel.build/rules/config#user-defined-transitions)
+    "_allowlist_function_transition": attr.label(
+        default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
+    ),
+})
+
+platforms_symlink_transition = rule(
+    implementation = _symlink_transition_rule_impl,
+    attrs = _platforms_symlink_transition_attrs,
+    executable = False,
+)
 
 def _create_symlink_transition_rule(cfg):
     return rule(

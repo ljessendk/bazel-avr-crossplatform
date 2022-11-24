@@ -1,1 +1,1 @@
-This example performs multiplatform builds by defining wrapper rules for existing rules. The new wrapper rules accepts a 'platforms' argument.
+This example performs multiplatform builds by defining wrapper rules for existing rules. One wrapper rule for each platform and rule combination.

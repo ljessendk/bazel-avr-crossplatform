@@ -1,5 +1,4 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 http_archive(
     name = "rules_pkg",
@@ -131,13 +130,6 @@ rules_foreign_cc_dependencies(register_built_tools = False)
 # )
 
 register_toolchains("//:avr-at90can128_12mhz_toolchain", "//:avr-atmega328p_16mhz_toolchain")
-
-git_repository(
-    name = "rules_meta",
-    commit = "062936fe3bab149bc2fc664301d8151868a3c874",
-    remote = "https://github.com/fmeum/rules_meta.git",
-    shallow_since = "1647421183 +0100",
-)
 
 http_archive(
     name = "rules_cc",
