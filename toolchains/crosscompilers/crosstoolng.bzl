@@ -2,38 +2,21 @@
 Rules for building cross-compilers using crosstool-ng
 """
 
-# ***** Begin: From rules_foreign_cc, framework.bzl
-
-def _declare_out(ctx, lib_name, dir_, files):
-    if files and len(files) > 0:
-        return [ctx.actions.declare_file("/".join([lib_name, dir_, file])) for file in files]
-    return []
-
-def _declare_output_groups(outputs):
-    dict_ = {}
-    for output in outputs:
-        dict_[output.basename] = [output]
-    return dict_
-
-# ***** End: From rules_foreign_cc, framework.bzl
-
 CrossCompilerToolchainInfo = provider(
     "Info about cross-compiler toolchain",
     fields = {
         "rootdir": "root directory",
-        "out_binary_files": "Binary files",
     },
 )
 
 def _crosstoolng_impl(ctx):
-    out_binary_files = _declare_out(ctx, ctx.attr.name, ctx.attr.out_bin_dir, ctx.attr.out_binaries)
     args = ctx.actions.args()
     args.add_all(ctx.files.tarballs)
 
     outdir = ctx.actions.declare_directory(ctx.attr.name)
     tarfile = ctx.outputs.tarfile
     ctx.actions.run_shell(
-        outputs = [outdir] + out_binary_files + ([tarfile] if tarfile != None else []),
+        outputs = [outdir] + ([tarfile] if tarfile != None else []),
         inputs = depset(ctx.files.deps, transitive = [depset(ctx.files.tarballs + [ctx.file.defconfig])]),
         arguments = [args],
         mnemonic = "CrossCompile",
@@ -58,14 +41,10 @@ def _crosstoolng_impl(ctx):
         progress_message = "Building cross-compiler - this can take a while...",
     )
 
-    output_groups = _declare_output_groups(out_binary_files)
-
     return [
         DefaultInfo(files = depset([outdir])),
-        OutputGroupInfo(**output_groups),
         CrossCompilerToolchainInfo(
             rootdir = outdir,
-            out_binary_files = out_binary_files,
         ),
     ]
 
@@ -77,7 +56,5 @@ crosstoolng = rule(
         "deps": attr.label_list(cfg = "exec", allow_files = True),
         "tarballs": attr.label_list(cfg = "exec", allow_files = True),
         "tarfile": attr.output(),
-        "out_bin_dir": attr.string(default = "bin"),
-        "out_binaries": attr.string_list(),
     },
 )

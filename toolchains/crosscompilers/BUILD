@@ -37,10 +37,6 @@ crosstoolng(
     name = "avr-toolchain",
     ct_ng = "ct-ng",
     defconfig = "avr/defconfig",
-    out_binaries = [
-        "avr-objcopy",
-        "avr-objdump",
-    ],
     tags = ["manual"],
     tarballs = ["@{}//file".format(d) for d in [
         "zlib-1.2.11",
