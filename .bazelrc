@@ -1,3 +1,2 @@
-build --incompatible_enable_cc_toolchain_resolution 
 build --experimental_platform_in_output_dir=True
 build --incompatible_strict_action_env
