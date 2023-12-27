@@ -1,3 +1,5 @@
+load("@rules_foreign_cc//toolchains/native_tools:tool_access.bzl", "get_make_data")
+
 """
 Rules for building cross-compilers using crosstool-ng
 """
@@ -10,6 +12,8 @@ CrossCompilerToolchainInfo = provider(
 )
 
 def _crosstoolng_impl(ctx):
+    make_data = get_make_data(ctx)
+
     args = ctx.actions.args()
     args.add_all(ctx.files.tarballs)
 
@@ -17,7 +21,7 @@ def _crosstoolng_impl(ctx):
     tarfile = ctx.outputs.tarfile
     ctx.actions.run_shell(
         outputs = [outdir] + ([tarfile] if tarfile != None else []),
-        inputs = depset(ctx.files.deps, transitive = [depset(ctx.files.tarballs + [ctx.file.defconfig])]),
+        inputs = depset(ctx.files.deps, transitive = [make_data.target[DefaultInfo].files, depset(ctx.files.tarballs + [ctx.file.defconfig])]),
         arguments = [args],
         mnemonic = "CrossCompile",
         use_default_shell_env = True,
@@ -36,6 +40,8 @@ def _crosstoolng_impl(ctx):
             """{ct_ng} defconfig""".format(ct_ng = ctx.file.ct_ng.path),
             """{ct_ng} build""".format(ct_ng = ctx.file.ct_ng.path),
             """chmod -R u+w {outdir}""".format(outdir = outdir.path),
+            # Delete bad symlinks
+            """rm -rf {outdir}/share/licenses/crosstool-ng""".format(outdir = outdir.path),
             """tar cfz {tarfile} -C $(dirname {outdir}) $(basename {outdir})""".format(tarfile = tarfile.path, outdir = outdir.path) if tarfile != None else "",
         ]),
         progress_message = "Building cross-compiler - this can take a while...",
@@ -57,4 +63,5 @@ crosstoolng = rule(
         "tarballs": attr.label_list(cfg = "exec", allow_files = True),
         "tarfile": attr.output(),
     },
+    toolchains = ["@rules_foreign_cc//toolchains:make_toolchain"],
 )

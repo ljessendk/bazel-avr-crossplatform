@@ -14,6 +14,11 @@ configure_make(
         # Tagged as manual to prevent build for target
         "manual",
     ],
+    postfix_script = "\n".join([
+        # Fix paths (change absolute paths to relative paths)
+        "sed -i \"s|$EXT_BUILD_ROOT/||g\" ../crosstool-ng/bin/ct-ng",
+        "sed -i \"s|$EXT_BUILD_ROOT/||g\" ../crosstool-ng/share/crosstool-ng/paths.sh",
+    ])
 )
 
 filegroup(

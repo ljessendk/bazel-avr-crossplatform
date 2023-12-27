@@ -13,9 +13,9 @@ rules_pkg_dependencies()
 
 http_archive(
     name = "rules_foreign_cc",
-    sha256 = "bcd0c5f46a49b85b384906daae41d277b3dc0ff27c7c752cc51e43048a58ec83",
-    strip_prefix = "rules_foreign_cc-0.7.1",
-    url = "https://github.com/bazelbuild/rules_foreign_cc/archive/0.7.1.tar.gz",
+    sha256 = "476303bd0f1b04cc311fc258f1708a5f6ef82d3091e53fd1977fa20383425a6a",
+    strip_prefix = "rules_foreign_cc-0.10.1",
+    url = "https://github.com/bazelbuild/rules_foreign_cc/archive/0.10.1.tar.gz",
 )
 
 http_archive(
@@ -119,7 +119,7 @@ crosstool_ng_deps = [
 
 load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
 
-rules_foreign_cc_dependencies(register_built_tools = False)
+rules_foreign_cc_dependencies()
 
 # new_git_repository(
 #     name = "simulavr",
