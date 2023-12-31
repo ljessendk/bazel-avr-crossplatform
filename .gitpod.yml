@@ -2,6 +2,10 @@ image:
   file: .gitpod.dockerfile
 tasks:
   - init: |
+      echo "startup --output_user_root=/workspace/bazel_output" > ~/.bazelrc
       bazel build -s ...
     command: |
       bazel test -s ...
+vscode:
+  extensions:
+    - "BazelBuild.vscode-bazel"
