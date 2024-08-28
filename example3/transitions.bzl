@@ -67,7 +67,7 @@ def _platforms_transition_impl(settings, attr):
     _ignore = settings
 
     res = {
-        "//command_line_option:platforms": attr.platforms,
+        "//command_line_option:platforms": [attr.platforms],
     } if attr.platforms != "" else {}
 
     return res
@@ -101,7 +101,7 @@ def _attrs(cfg):
 _platforms_symlink_transition_attrs = _attrs(_platforms_transition)
 _platforms_symlink_transition_attrs.update({
     # Platforms setting (override //command_line_option:platforms)
-    "platforms": attr.string(),
+    "platforms": attr.label(),
     # Enable/allow user-defined transitions (see https://bazel.build/rules/config#user-defined-transitions)
     "_allowlist_function_transition": attr.label(
         default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
