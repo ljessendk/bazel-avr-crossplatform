@@ -1,6 +1,7 @@
 load("transitions.bzl", "cc_binary_platforms", "objcopy_platforms", "host_symlink_transition")
 load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar")
 load("genheader.bzl", "genheader")
+load("@rules_cc//cc:defs.bzl", "cc_test")
 
 [
     cc_binary_platforms(

@@ -2,6 +2,7 @@
 Methods for performing platform transitions
 """
 load("//tools:objcopy.bzl", "objcopy")
+load("@rules_cc//cc:defs.bzl", "cc_binary")
 
 def cc_binary_platforms(name, platforms = "", tags = [], **kwargs):
     """
@@ -16,7 +17,7 @@ def cc_binary_platforms(name, platforms = "", tags = [], **kwargs):
     if platforms != "":
         orig_name = name + ".orig"
         internal_rule_tags = tags + (["manual"] if "manual" not in tags else [])
-        native.cc_binary(name = orig_name, tags = internal_rule_tags, **kwargs)
+        cc_binary(name = orig_name, tags = internal_rule_tags, **kwargs)
         platforms_symlink_transition(
             name = name + "_transition_rule",
             platforms = platforms,
@@ -24,7 +25,7 @@ def cc_binary_platforms(name, platforms = "", tags = [], **kwargs):
             output = name
         )
     else:
-        native.cc_binary(name = name, tags = tags, **kwargs)
+        cc_binary(name = name, tags = tags, **kwargs)
 
 def objcopy_platforms(name, out, platforms = "", tags = [], **kwargs):
     """
