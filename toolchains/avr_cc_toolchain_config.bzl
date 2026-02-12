@@ -2,9 +2,9 @@
 Macros for setting up AVR C/C++ toolchains
 """
 
-load("@bazel_tools//tools/build_defs/cc:action_names.bzl", "ACTION_NAMES")
+load("@rules_cc//cc:action_names.bzl", "ACTION_NAMES")
 load(
-    "@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl",
+    "@rules_cc//cc:cc_toolchain_config_lib.bzl",
     "artifact_name_pattern",
     "feature",
     "flag_group",
@@ -12,6 +12,9 @@ load(
     "tool_path",
     "with_feature_set",
 )
+load("@rules_cc//cc/common:cc_common.bzl", "cc_common")
+load("@rules_cc//cc/toolchains:cc_toolchain_config_info.bzl", "CcToolchainConfigInfo")
+load("@rules_cc//cc:defs.bzl", "cc_toolchain")
 
 all_link_actions = [
     ACTION_NAMES.cpp_link_executable,
@@ -248,7 +251,7 @@ def add_avr_cc_toolchain(name, mmcu, freq):
         freq = freq,
     )
 
-    native.cc_toolchain(
+    cc_toolchain(
         name = name + "-cc_toolchain",
         toolchain_identifier = name + "-cc_toolchain",
         toolchain_config = name + "-cc_toolchain_config",

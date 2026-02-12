@@ -1,6 +1,7 @@
 load("transitions.bzl", "at90can128_12mhz_cc_binary", "at90can128_12mhz_objcopy", "atmega328p_16mhz_cc_binary", "atmega328p_16mhz_objcopy", "host_symlink_transition")
 load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar")
 load("genheader.bzl", "genheader")
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_test")
 
 [
     cc_binary_rule(

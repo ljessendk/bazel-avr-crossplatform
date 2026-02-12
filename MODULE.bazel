@@ -4,8 +4,10 @@
 #
 # For more details, please check https://github.com/bazelbuild/bazel/issues/18958
 ###############################################################################
-bazel_dep(name = "rules_pkg", version = "0.9.1")
-bazel_dep(name = "rules_foreign_cc", version = "0.10.1")
+bazel_dep(name = "rules_pkg", version = "1.0.1")
+bazel_dep(name = "rules_cc", version = "0.2.16")
+bazel_dep(name = "rules_foreign_cc", version = "0.15.1")
+bazel_dep(name = "platforms", version = "1.0.0")
 
 register_toolchains("//:avr-at90can128_12mhz_toolchain", "//:avr-atmega328p_16mhz_toolchain")
 
